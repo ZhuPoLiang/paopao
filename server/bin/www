@@ -5,8 +5,16 @@
  */
 
 var app = require('../app');
-var debug = require('debug')('demo:server');
+var debug = require('debug')('log4js-example');
 var http = require('http');
+
+/**
+ * Initialise log4js first, so we don't miss any log messages
+ */
+var log4js = require('koa-log4');
+log4js.configure('./config/log4js.json');
+
+var log = log4js.getLogger("startup");
 
 /**
  * Get port from environment and store in Express.
@@ -65,11 +73,11 @@ function onError(error) {
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
+      log.error(bind + ' requires elevated privileges');
       process.exit(1);
       break;
     case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
+      log.error(bind + ' is already in use');
       process.exit(1);
       break;
     default:
@@ -86,5 +94,5 @@ function onListening() {
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-  debug('Listening on ' + bind);
+  log.info('Koa2 server listening on ' + bind)
 }
